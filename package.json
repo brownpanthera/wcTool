@@ -1,0 +1,14 @@
+{
+  "name": "ccwc",
+  "version": "1.0.0",
+  "description": "unix command line tool wc",
+  "main": "index.js",
+  "bin": {
+    "ccwc": "index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "ali",
+  "license": "ISC"
+}
