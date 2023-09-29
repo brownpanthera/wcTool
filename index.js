@@ -70,6 +70,11 @@ function countCharacters(filePath) {
   process.exit(1);
 }
 
+function countBytesLinesWords(filePath) {
+  const line = countLines(filePath);
+  console.log(`line ${line}`);
+}
+
 // Extracting command-line arguments, excluding the first two elements (node and script name)
 const [, , ...args] = process.argv;
 
@@ -114,5 +119,9 @@ switch (args[0]) {
       `);
     break;
   default:
-    console.error("check command by using -help");
+    if(args.length !== 1){
+      console.error("Usage: ccwc [options] <file>");
+      process.exit(1);
+    }
+    countBytesLinesWords(args[0]);
 }
