@@ -9,6 +9,7 @@ function countBytes(filePath) {
     if (stats.isFile()) {
       const byteCount = stats.size;
       console.log(`${byteCount} ${filePath}`);
+      return byteCount;
     } else {
       console.error(`${filePath} is a directory`);
       process.exit(1);
@@ -21,25 +22,28 @@ function countBytes(filePath) {
 
 // Function to count the number of lines in a file
 function countLines(filePath) {
-  const rl = readline.createInterface({
-    input: fs.createReadStream(filePath),
-    output: process.stdout,
-    terminal: false,
-  });
+  return new Promise((resolve, reject) => {
+    const rl = readline.createInterface({
+      input: fs.createReadStream(filePath),
+      output: process.stdout,
+      terminal: false,
+    });
 
-  let lineCount = 0;
+    let lineCount = 0;
 
-  rl.on("line", () => {
-    lineCount++;
-  });
+    rl.on("line", () => {
+      lineCount++;
+    });
 
-  rl.on("close", () => {
-    console.log(`${lineCount} ${filePath}`);
-  });
+    rl.on("close", () => {
+      console.log(`${lineCount} ${filePath}`); // Log the line count
+      resolve(lineCount); // Resolve the promise with the line count
+    });
 
-  rl.on("error", (error) => {
-    console.error(`No such file or directory`);
-    process.exit(1);
+    rl.on("error", (error) => {
+      console.error(`No such file or directory`);
+      reject(error); // Reject the promise in case of an error
+    });
   });
 }
 
@@ -52,6 +56,7 @@ function countWords(filePath) {
       // console.log(`${index + 1} ${word}`);
     });
     console.log(`${words.length} ${filePath}`);
+    return words.length;
   } catch (error) {
     console.error(`Error reading ${filePath}: ${error}`);
     process.exit(1);
@@ -70,11 +75,13 @@ function countCharacters(filePath) {
   process.exit(1);
 }
 
-function countBytesLinesWords(filePath) {
-  const line = countLines(filePath);
-  console.log(`line ${line}`);
+// Funtion to count bytes,lines and words with no args
+async function countBytesLinesWords(filePath) {
+  const byteCount = countBytes(filePath);
+  const wordCount = countWords(filePath);
+  const lineCount = await countLines(filePath);
+  console.log(`${byteCount} ${wordCount} ${lineCount} ${filePath}`);
 }
-
 // Extracting command-line arguments, excluding the first two elements (node and script name)
 const [, , ...args] = process.argv;
 
@@ -120,7 +127,7 @@ switch (args[0]) {
     break;
   default:
     if(args.length !== 1){
-      console.error("Usage: ccwc [options] <file>");
+      console.error("Usage: ccwc -help");
       process.exit(1);
     }
     countBytesLinesWords(args[0]);
