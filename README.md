@@ -8,3 +8,33 @@ You can install `ccwc-tool` globally using npm. Make sure you have Node.js and n
 
 ```bash
 npm install -g ccwc-tool
+
+
+Usage
+Once ccwc-tool is installed, you can use it from the command line as follows:
+
+Counting Bytes
+To count the number of bytes in a file, use the -c option followed by the path to the file:
+
+ccwc -c <file>
+
+
+Counting Lines
+To count the number of lines in a file, use the -l option followed by the path to the file:
+
+ccwc -w <file>
+
+
+Here's an example of how to use ccwc-tool to count words, lines, and bytes in a file:
+
+ccwc <file>
+
+Help
+To view the help message and list of available options, use the -help option:
+
+ccwc -help
+
+
+Author: Ali
+GitHub repo: https://github.com/brownpanthera/wcTool
+Feel free to report issues, or request features on the GitHub repository.
