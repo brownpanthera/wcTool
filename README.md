@@ -24,6 +24,11 @@ To count the number of lines in a file, use the -l option followed by the path t
 
 ccwc -w <file>
 
+Create File
+To create file, use the -t option followed by the path to the file:
+
+ccwc -t <file>
+
 
 Example of how to use ccwc-tool to count words, lines, and bytes in a file:
 

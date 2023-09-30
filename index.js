@@ -1,6 +1,21 @@
 #!/usr/bin/env node
+
 const fs = require("fs");
 const readline = require("readline");
+
+//Function to write file
+
+function creatingFile(filePath){
+  if(!fs.existsSync(filePath)){
+    try{
+      fs.writeFileSync(filePath, ' ');
+    }catch(error){
+      console.log(error);
+    }
+  }else{
+    console.log('file already exists');
+  }
+}
 
 // Function to count the number of bytes in a file
 function countBytes(filePath) {
@@ -85,6 +100,7 @@ async function countBytesLinesWords(filePath) {
 // Extracting command-line arguments, excluding the first two elements (node and script name)
 const [, , ...args] = process.argv;
 
+
 // switch case to handle different command-line options
 switch (args[0]) {
   case "-c":
@@ -115,6 +131,13 @@ switch (args[0]) {
     }
     countCharacters(args[1]);
     break;
+    case "-t":
+      if(args.length !== 2 || args[0] !== "-t"){
+        console.error("Usage: ccwc -t <file>");
+        process.exit(1);
+      }
+      creatingFile(args[1]);
+      break;
   case "-help":
     console.log(`Usage: ccwc [options] <file>
 
@@ -131,4 +154,4 @@ switch (args[0]) {
       process.exit(1);
     }
     countBytesLinesWords(args[0]);
-}
+  }
