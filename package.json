@@ -1,5 +1,5 @@
 {
-  "name": "ccwc",
+  "name": "ccwc-tool",
   "version": "1.0.0",
   "description": "unix command line tool wc",
   "main": "index.js",
