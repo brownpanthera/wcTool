@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+const packageJson = require("./package.json")
+
 const fs = require("fs");
 const readline = require("readline");
 
@@ -46,8 +48,10 @@ function countLines(filePath) {
 
     let lineCount = 0;
 
-    rl.on("line", () => {
-      lineCount++;
+    rl.on("line", (line) => {
+      if(line.trim()!== ''){
+        lineCount++;
+      }
     });
 
     rl.on("close", () => {
@@ -81,13 +85,13 @@ function countWords(filePath) {
 // Function to count ch in a file
 function countCharacters(filePath) {
   try {
-    const content = fs.readFileSync(filePath, "utf-8");
+    const content = fs.readFileSync(filePath, 'utf-8');
     const characterCount = content.length;
-    console.log(`${characterCount} ${filePath}`);
+    console.log(`${characterCount} characters in ${filePath}`);
   } catch (error) {
-    console.error(`No such file or directory`);
+    console.error(`Error: ${error.message}`);
+    process.exit(1); // Exit with an error code
   }
-  process.exit(1);
 }
 
 // Funtion to count bytes,lines and words with no args
@@ -138,6 +142,13 @@ switch (args[0]) {
       }
       creatingFile(args[1]);
       break;
+      case "-version":
+        if(args[0] === "-version"){
+
+          console.log(`ccwc version:\n ${(packageJson.version)}`)
+          process.exit(0);
+        }
+        break;
   case "-help":
     console.log(`Usage: ccwc [options] <file>
 
