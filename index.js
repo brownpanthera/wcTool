@@ -109,35 +109,35 @@ const [, , ...args] = process.argv;
 switch (args[0]) {
   case "-c":
     if (args.length !== 2 || args[0] !== "-c") {
-      console.error("Usage: mist -c <file>");
+      console.error("Usage: ccwc -c <file>");
       process.exit(1);
     }
     countBytes(args[1]);
     break;
   case "-l":
     if (args.length !== 2 || args[0] !== "-l") {
-      console.error("Usage: mist -l <file>");
+      console.error("Usage: ccwc -l <file>");
       process.exit(1);
     }
     countLines(args[1]);
     break;
   case "-w":
     if (args.length != 2 || args[0] !== "-w") {
-      console.error("Usage: mist -w <file>");
+      console.error("Usage: ccwc -w <file>");
       process.exit(1);
     }
     countWords(args[1]);
     break;
   case "-m":
     if (args.length != 2 || args[0] !== "-m") {
-      console.error("Usage: mist -m <file>");
+      console.error("Usage: ccwc -m <file>");
       process.exit(1);
     }
     countCharacters(args[1]);
     break;
     case "-t":
       if(args.length !== 2 || args[0] !== "-t"){
-        console.error("Usage: mist -t <file>");
+        console.error("Usage: ccwc -t <file>");
         process.exit(1);
       }
       creatingFile(args[1]);
@@ -145,24 +145,23 @@ switch (args[0]) {
       case "-version":
         if(args[0] === "-version"){
 
-          console.log(`mist version:\n ${(packageJson.version)}`)
+          console.log(`ccwc version:\n ${(packageJson.version)}`)
           process.exit(0);
         }
         break;
   case "-help":
-    console.log(`Usage: mist [options] <file>
+    console.log(`Usage: ccwc [options] <file>
 
       Options:
         -c, --bytes    Print the byte counts
         -l, --lines    Print the newline counts
         -w  --words    Print the word counts
         -m, --chars    Print the character counts
-        -t, --file     Create the empty file
       `);
     break;
   default:
     if(args.length !== 1){
-      console.error("Usage: mist -help");
+      console.error("Usage: ccwc -help");
       process.exit(1);
     }
     countBytesLinesWords(args[0]);
