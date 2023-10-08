@@ -157,6 +157,7 @@ switch (args[0]) {
         -l, --lines    Print the newline counts
         -w  --words    Print the word counts
         -m, --chars    Print the character counts
+        -t, --file     Creating an empty file
       `);
     break;
   default:
