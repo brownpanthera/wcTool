@@ -1,169 +1,97 @@
 #!/usr/bin/env node
+"use strict";
 
-const packageJson = require("./package.json")
+const { showHelp, showVersion } = require("./commands/help");
+const {
+  countBytes,
+  countLines,
+  countWords,
+  countCharacters,
+  countBytesLinesWords,
+} = require("./commands/wordcount");
+const { touchFile } = require("./commands/touch");
+const { removeFile } = require("./commands/rm");
+const { validateFileArgument, parseRmOptions } = require("./utils/common");
 
-const fs = require("fs");
-const readline = require("readline");
+async function main() {
+  const args = process.argv.slice(2);
 
-//Function to write file
-
-function creatingFile(filePath){
-  if(!fs.existsSync(filePath)){
-    try{
-      fs.writeFileSync(filePath, ' ');
-    }catch(error){
-      console.log(error);
-    }
-  }else{
-    console.log('file already exists');
+  if (args.length === 0) {
+    showHelp();
+    return;
   }
-}
 
-// Function to count the number of bytes in a file
-function countBytes(filePath) {
-  try {
-    const stats = fs.statSync(filePath);
-    if (stats.isFile()) {
-      const byteCount = stats.size;
-      console.log(`${byteCount} ${filePath}`);
-      return byteCount;
-    } else {
-      console.error(`${filePath} is a directory`);
+  // Global flags
+  if (args[0] === "-help" || args[0] === "--help" || args[0] === "help") {
+    showHelp();
+    return;
+  }
+  if (args[0] === "-version" || args[0] === "--version" || args[0] === "version") {
+    showVersion();
+    return;
+  }
+
+  // Touch command: `tit touch <file(s)>` - Linux style
+  if (args[0] === "touch") {
+    if (args.length < 2) {
+      console.error("Usage: tit touch <file(s)>");
       process.exit(1);
     }
-  } catch (error) {
-    console.error(`No such file or directory`);
-    process.exit(1);
+    // Support multiple files like Linux touch
+    for (let i = 1; i < args.length; i++) {
+      touchFile(args[i]);
+    }
+    return;
   }
-}
 
-// Function to count the number of lines in a file
-function countLines(filePath) {
-  return new Promise((resolve, reject) => {
-    const rl = readline.createInterface({
-      input: fs.createReadStream(filePath),
-      output: process.stdout,
-      terminal: false,
-    });
+  // Remove command: `tit rm [options] <file(s)>`
+  if (args[0] === "rm") {
+    const { options, fileArgs } = parseRmOptions(args);
+    removeFile(fileArgs, options);
+    return;
+  }
 
-    let lineCount = 0;
-
-    rl.on("line", (line) => {
-      if(line.trim()!== ''){
-        lineCount++;
+  // Word count style flags
+  switch (args[0]) {
+    case "-c":
+    case "--bytes": {
+      validateFileArgument(args, 2, "-c <file>");
+      countBytes(args[1]);
+      return;
+    }
+    case "-l":
+    case "--lines": {
+      validateFileArgument(args, 2, "-l <file>");
+      await countLines(args[1]);
+      return;
+    }
+    case "-w":
+    case "--words": {
+      validateFileArgument(args, 2, "-w <file>");
+      countWords(args[1]);
+      return;
+    }
+    case "-m":
+    case "--chars": {
+      validateFileArgument(args, 2, "-m <file>");
+      countCharacters(args[1]);
+      return;
+    }
+    default: {
+      // If a single file is passed with no flags, do full analysis
+      if (!args[0].startsWith("-") && args.length === 1) {
+        await countBytesLinesWords(args[0]);
+        return;
       }
-    });
 
-    rl.on("close", () => {
-      console.log(`${lineCount} ${filePath}`); // Log the line count
-      resolve(lineCount); // Resolve the promise with the line count
-    });
-
-    rl.on("error", (error) => {
-      console.error(`No such file or directory`);
-      reject(error); // Reject the promise in case of an error
-    });
-  });
-}
-
-//Function to count the words in a file
-function countWords(filePath) {
-  try {
-    const data = fs.readFileSync(filePath, "utf-8");
-    const words = data.split(/\s+/).filter((word) => word.trim() !== "");
-    words.forEach((word, index) => {
-      // console.log(`${index + 1} ${word}`);
-    });
-    console.log(`${words.length} ${filePath}`);
-    return words.length;
-  } catch (error) {
-    console.error(`Error reading ${filePath}: ${error}`);
-    process.exit(1);
+      // Unrecognized input; show help
+      showHelp();
+      return;
+    }
   }
 }
 
-// Function to count ch in a file
-function countCharacters(filePath) {
-  try {
-    const content = fs.readFileSync(filePath, 'utf-8');
-    const characterCount = content.length;
-    console.log(`${characterCount} characters in ${filePath}`);
-  } catch (error) {
-    console.error(`Error: ${error.message}`);
-    process.exit(1); // Exit with an error code
-  }
-}
-
-// Funtion to count bytes,lines and words with no args
-async function countBytesLinesWords(filePath) {
-  const byteCount = countBytes(filePath);
-  const wordCount = countWords(filePath);
-  const lineCount = await countLines(filePath);
-  console.log(`${byteCount} ${wordCount} ${lineCount} ${filePath}`);
-}
-// Extracting command-line arguments, excluding the first two elements (node and script name)
-const [, , ...args] = process.argv;
-
-
-// switch case to handle different command-line options
-switch (args[0]) {
-  case "-c":
-    if (args.length !== 2 || args[0] !== "-c") {
-      console.error("Usage: ccwc -c <file>");
-      process.exit(1);
-    }
-    countBytes(args[1]);
-    break;
-  case "-l":
-    if (args.length !== 2 || args[0] !== "-l") {
-      console.error("Usage: ccwc -l <file>");
-      process.exit(1);
-    }
-    countLines(args[1]);
-    break;
-  case "-w":
-    if (args.length != 2 || args[0] !== "-w") {
-      console.error("Usage: ccwc -w <file>");
-      process.exit(1);
-    }
-    countWords(args[1]);
-    break;
-  case "-m":
-    if (args.length != 2 || args[0] !== "-m") {
-      console.error("Usage: ccwc -m <file>");
-      process.exit(1);
-    }
-    countCharacters(args[1]);
-    break;
-    case "-t":
-      if(args.length !== 2 || args[0] !== "-t"){
-        console.error("Usage: ccwc -t <file>");
-        process.exit(1);
-      }
-      creatingFile(args[1]);
-      break;
-      case "-version":
-        if(args[0] === "-version"){
-
-          console.log(`ccwc version:\n ${(packageJson.version)}`)
-          process.exit(0);
-        }
-        break;
-  case "-help":
-    console.log(`Usage: ccwc [options] <file>
-
-      Options:
-        -c, --bytes    Print the byte counts
-        -l, --lines    Print the newline counts
-        -w  --words    Print the word counts
-        -m, --chars    Print the character counts
-        -t, --file     Creating an empty file
-      `);
-    break;
-  default:
-    if(args.length !== 1){
-      console.error("Usage: ccwc -help");
-      process.exit(1);
-    }
-    countBytesLinesWords(args[0]);
-  }
+main().catch((error) => {
+  console.error(error?.message || error);
+  process.exit(1);
+});

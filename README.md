@@ -1,44 +1,117 @@
-# ccwc-tool
+# tit-tool
 
-`ccwc-tool` is a Unix-like command-line tool for counting words, bytes, characters, lines, and combinations of these in text files. It is designed to provide similar functionality to the `wc` (word count) utility commonly found on Unix-like systems.
+`tit-tool` is a Unix-like command-line tool that combines file analysis and manipulation capabilities. It provides functionality similar to the `wc` (word count) utility for text analysis, plus file manipulation commands like `touch` and `rm` for creating and removing files and directories.
 
 ## Installation
 
-You can install `ccwc-tool` globally using npm. Make sure you have Node.js and npm installed on your system. Run the following command:
+You can install `tit-tool` globally using npm. Make sure you have Node.js and npm installed on your system. Run the following command:
 
 ```bash
-npm install -g ccwc-tool
+npm install -g tit-tool
 
 
-Usage
-Once ccwc-tool is installed, you can use it from the command line as follows:
+## Usage
 
-Counting Bytes
-To count the number of bytes in a file, use the -c option followed by the path to the file:
+Once tit-tool is installed, you can use it from the command line as follows:
 
-ccwc -c <file>
+### File Analysis Commands
 
+**Counting Bytes**
+To count the number of bytes in a file:
+```bash
+tit -c <file>
+```
 
-Counting Lines
-To count the number of lines in a file, use the -l option followed by the path to the file:
+**Counting Lines**
+To count the number of lines in a file:
+```bash
+tit -l <file>
+```
 
-ccwc -w <file>
+**Counting Words**
+To count the number of words in a file:
+```bash
+tit -w <file>
+```
 
-Create File
-To create file, use the -t option followed by the path to the file:
+**Counting Characters**
+To count the number of characters in a file:
+```bash
+tit -m <file>
+```
 
-ccwc -t <file>
+**Complete Analysis**
+To count words, lines, and bytes in a file:
+```bash
+tit <file>
+```
 
+### File Manipulation Commands
 
-Example of how to use ccwc-tool to count words, lines, and bytes in a file:
+**Touch Command (Create/Update Files)**
+Create a new file or update timestamps of existing files:
+```bash
+tit touch <file>
+# or
+tit -t <file>
+```
 
-ccwc <file>
+**Remove Command (Delete Files and Directories)**
+Remove files:
+```bash
+tit rm <file>
+```
 
+Remove multiple files:
+```bash
+tit rm file1.txt file2.txt file3.txt
+```
 
-Help
-To view the help message and list of available options, use the -help option:
+Remove directories recursively:
+```bash
+tit rm -r <directory>
+```
 
-ccwc -help
+Force remove (no prompts):
+```bash
+tit rm -f <file>
+```
+
+Combine recursive and force options:
+```bash
+tit rm -rf <directory>
+```
+
+### Help
+To view the help message and list of available options:
+```bash
+tit -help
+```
+
+### Version
+To check the version:
+```bash
+tit -version
+```
+
+## Examples
+
+```bash
+# Analyze a text file
+tit document.txt
+
+# Create a new file
+tit touch newfile.txt
+
+# Remove a file
+tit rm oldfile.txt
+
+# Remove a directory and all its contents
+tit rm -rf temp_folder/
+
+# Count words in a file
+tit -w document.txt
+```
 
 
 Author: Ali

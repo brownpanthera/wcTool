@@ -1,12 +1,15 @@
 {
-  "name": "ccwc-tool",
+  "name": "tit-tool",
   "version": "1.4.0",
-  "description": "unix command line tool wc",
+  "description": "A modular Unix-like command-line tool combining word count analysis and file manipulation commands (wc, touch, rm)",
   "main": "index.js",
   "bin": {
-    "ccwc": "index.js"
+    "tit": "index.js"
   },
   "scripts": {
+    "start": "node index.js",
+    "help": "node index.js -help",
+    "version": "node index.js -version",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "ali",
